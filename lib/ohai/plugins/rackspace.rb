@@ -19,6 +19,12 @@ provides "rackspace"
 require_plugin "kernel"
 require_plugin "network"
 
+RACKSPACE_KNOWN_MACS = %w{
+  00:00:0c:07:ac:01
+  00:00:0c:07:ac:02
+  00:00:0c:9f:f0:01
+}
+
 # Checks for matching rackspace kernel name
 #
 # === Return
@@ -36,7 +42,7 @@ end
 def has_rackspace_mac?
   network[:interfaces].values.each do |iface|
     unless iface[:arp].nil?
-      return true if iface[:arp].value?("00:00:0c:07:ac:01") or iface[:arp].value?("00:00:0c:9f:f0:01")
+      return RACKSPACE_KNOWN_MACS.any?{|arp| iface[:arp].value?(arp)}
     end
   end
   false

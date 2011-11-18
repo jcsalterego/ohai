@@ -94,6 +94,16 @@ describe Ohai::System, "plugin rackspace" do
       end
     end
 
+    describe "with alternate rackspace mac and hostname" do
+      it_should_behave_like "rackspace"
+
+      before(:each) do
+        IO.stub!(:select).and_return([[],[1],[]])
+        @ohai[:hostname] = "slice74976"
+        @ohai[:network][:interfaces][:eth0][:arp] = {"67.23.20.1" => "00:00:0c:07:ac:02"}
+      end
+    end
+
     describe "without rackspace mac" do
       it_should_behave_like "!rackspace"
 
@@ -109,6 +119,15 @@ describe Ohai::System, "plugin rackspace" do
       before(:each) do
         @ohai[:hostname] = "bubba"
         @ohai[:network][:interfaces][:eth0][:arp] = {"67.23.20.1" => "00:00:0c:07:ac:01"}
+      end
+    end
+
+    describe "without rackspace hostname but with alternate mac" do
+      it_should_behave_like "rackspace"
+
+      before(:each) do
+        @ohai[:hostname] = "bubba"
+        @ohai[:network][:interfaces][:eth0][:arp] = {"67.23.20.1" => "00:00:0c:07:ac:02"}
       end
     end
 
